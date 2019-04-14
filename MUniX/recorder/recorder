@@ -1,0 +1,4 @@
+clear;
+echo"q for finish";
+ OUT=$(date +%y%m%d%H%M%S.aac);
+ ffmpeg -f avfoundation -ac 2 -i :0 -c:a aac -ab 96k "$(date +"%Y_%m_%d_%I_%M_%p")" 

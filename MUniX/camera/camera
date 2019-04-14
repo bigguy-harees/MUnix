@@ -1,0 +1,9 @@
+#!/bin/bash
+echo "press 1 for camera and 2 for video"
+ read n;
+if [ $n == 1 ]
+then
+ ffmpeg -f avfoundation -video_size 1280x720 -framerate 30 -i 0 -vframes 1 "$(date +"%Y_%m_%d_%I_%M_%p").jpg" &>/dev/null
+else
+ ffmpeg -f avfoundation -video_size 1280x720 -framerate 30 -i 1  "$(date +"%Y_%m_%d_%I_%M_%p").mpg" &>/dev/null
+ fi

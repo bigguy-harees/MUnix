@@ -1,0 +1,220 @@
+#!/bin/bash
+clear
+
+
+arrowup='\[A'
+arrowdown='\[B'
+arrowrt='\[C'
+arrowleft='\[D'
+
+
+
+
+DATA[0]="_|      _|                          _|   _|       _|      "
+DATA[1]="_|_|  _|_|    _|    _|   _|_|_|            _|   _|     	 "
+DATA[2]="_|  _|  _|    _|    _|   _|    _|   _|        _|       	 "
+DATA[3]="_|      _|    _|    _|   _|    _|   _|      _|   _|    	 "
+DATA[4]="_|      _|     _|_|_|    _|    _|   _|    _|       _|  	 "
+DATA[5]="   _								 "
+DATA[6]="  │ │								 "
+DATA[7]="  │ │								 "
+DATA[8]="  │ │								 "
+DATA[9]="  │ │								 "
+DATA[10]="  │_│							 	  "
+DATA[11]=" /ˉ_ˉ\                          \ | /			 	  "
+DATA[12]="┌────────────────────────────────.─.──────────╮	 	  "
+DATA[13]="│                                 U           │	 	  "
+DATA[14]="│                    MUNIX                    │	 	  "
+DATA[15]="│ =================00000000000=============== │	 	  "
+DATA[16]="│ ==================00000000================= │	          "
+DATA[17]="│ ╭─────────────────────────────────────────╮ │	          "
+DATA[18]="│ │   👥  👤         📷   📸       ➕  ➖         │ │		               "
+DATA[19]="│ │   👤  👥         🎥   📹       ✖️  ➗        │ │		  "
+DATA[20]="│ │  Contacts      Camera     calculator    │ │	          "
+DATA[21]="│ │                                         │ │		  "
+DATA[22]="│ │  📆    📅        📪    📭      🎮   👾        │ │		  "
+DATA[23]="│ │  📅    📆        ✉️   📫      🎯   🎲        │ │		  "
+DATA[24]="│ │  Calendar      Mail           fun       │ │		  "
+DATA[25]="│ │                                         │ │		  "
+DATA[26]="│ │  📞   📲          🎧   🎵       📻   🎧       │ │		  "
+DATA[27]="│ │  📱   ☎️         🎼   🎶       🔘  🔊        │ │		  "
+DATA[28]="│ │   Call          Music      VPlayer      │ │		  "
+DATA[29]="│ │                                         │ │		  "
+DATA[30]="│ │   🎤   🎙        ⚙️   ⚙️      🌉    🌄      │ │		  "
+DATA[31]="│ │     🎙                       🌇    🌈      │ │		  "
+DATA[32]="│ │  VRecorder     Settings     Gallery     │ │		  "
+DATA[33]="│ │                                         │ │		  "
+DATA[34]="│ ╰─────────────────────────────────────────╯ │		  "
+DATA[35]="│                  ╭‒‒‒‒‒‒‒‒‒╮                │		  "
+DATA[36]="│                 ⎛     ↑     ⎞               │		  "
+DATA[37]="│     _           ⎢  ←  @  →  ⎥        Q      │		  "
+DATA[38]="│                 ⎝     ↓     ⎠               │		  "
+DATA[39]="│                  ╰——‒‒‒‒‒‒‒╯                │		  "
+DATA[40]="╰─────────────────────────────────────────────╯		  "
+
+
+tput civis
+REAL_OFFSET_X=50
+REAL_OFFSET_Y=2
+
+draw_menu() {
+  V_COORD_X=$1
+  V_COORD_Y=$2
+
+  tput cup $((REAL_OFFSET_Y + V_COORD_Y)) $((REAL_OFFSET_X + V_COORD_X))
+
+printf %s ${DATA[V_COORD_Y]:V_COORD_X:1}
+
+}
+
+
+
+extract_current_cursor_position() {
+    export $1
+    exec < /dev/tty
+    oldstty=$(stty -g)
+    stty raw -echo min 0
+    echo -en "\033[6n" > /dev/tty
+    IFS=';' read -r -d R -a pos
+    stty $oldstty
+    eval "$1[0]=$((${pos[0]:2} - 2))"
+    eval "$1[1]=$((${pos[1]} - 1))"
+}
+
+
+
+
+
+i=1;
+for ((x=0; x<${#DATA[0]}; x++)); do
+  for ((y=0; y<=42; y++,i++)); do
+    draw_menu $x $y
+  done
+done
+
+
+
+tput home
+
+
+
+# --------------------------------------------
+
+REAL_OFFSET=25
+V_COORD_X=15
+V_COORD_Y=15
+row=23
+col=45
+
+
+SUCCESS=0
+
+trap "tput cvvis; clear;reset;exit 0" 2 INT
+
+boundary()
+
+{
+  if [ $col -ge 76 ]
+then
+col=45
+fi
+if [ $col -le 44 ]
+then
+col=45
+fi
+
+if [ $row -ge 36 ]
+then
+row=35
+fi
+
+if [ $row -le 22 ]
+then
+row=23
+fi
+}
+
+
+while :
+do
+
+  tput cup $row $col
+  tput civis
+
+
+	read -n3 -s key
+	echo -n "$key" | grep "$arrowleft"  #Check if character code detected.
+	if [ "$?" -eq $SUCCESS ]
+	then
+    tput rc
+    printf %s "       "
+    boundary
+    tput cup $row $((col=col-12))
+    boundary
+    tput sc
+  	printf %s -------
+
+	fi
+
+	echo -n "$key" | grep "$arrowrt"
+	if [ "$?" -eq $SUCCESS ]
+	then
+
+    tput rc
+    printf %s "       "
+    boundary
+    tput cup $row $((col=col+12))
+    boundary
+    tput sc
+    printf %s -------
+
+	fi
+
+	echo -n "$key" | grep "$arrowdown"
+	if [ "$?" -eq $SUCCESS ]
+	then
+
+    tput rc
+    printf %s "       "
+        boundary
+    tput cup $((row=row+4)) $col
+    boundary
+    tput sc
+  	printf %s -------
+	fi
+
+	echo -n "$key" | grep "$arrowup"
+	if [ "$?" -eq $SUCCESS ]
+	then
+    tput rc
+    printf %s "       "
+    boundary
+    tput cup $((row=row-4)) $col
+    boundary
+    tput sc
+    printf %s -------
+
+	fi
+
+
+echo -n "$key" | grep "jjj" >/dev/null
+if [ "$?" -eq $SUCCESS ]
+then
+
+
+  exit 0
+  fi
+
+done
+
+
+
+
+
+
+
+
+#echo done
+tput cvvis
+
+#---------------------------------------------

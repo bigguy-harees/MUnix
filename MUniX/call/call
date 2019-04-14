@@ -1,0 +1,6 @@
+clear
+
+echo "Enter the mobile number"
+read n
+
+python /users/bigguy/desktop/munix/call/call.py $n

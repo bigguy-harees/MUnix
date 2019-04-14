@@ -1,0 +1,137 @@
+#!/bin/bash
+DATA[0]="_|      _|                          _|   _|       _|            "
+DATA[1]="_|_|  _|_|    _|    _|   _|_|_|            _|   _|     	 "
+DATA[2]="_|  _|  _|    _|    _|   _|    _|   _|        _|       	 "
+DATA[3]="_|      _|    _|    _|   _|    _|   _|      _|   _|    	 "
+DATA[4]="_|      _|     _|_|_|    _|    _|   _|    _|       _|  	 "
+DATA[5]="   _								 "
+DATA[6]="  │ │								 "
+DATA[7]="  │ │								 "
+DATA[8]="  │ │								 "
+DATA[9]="  │ │								 "
+DATA[10]="  │_│							 	  "
+DATA[11]=" /ˉ_ˉ\                          \ | /			 	  "
+DATA[12]="┌────────────────────────────────.─.──────────╮	 	  "
+DATA[13]="│                                 U           │	 	  "
+DATA[14]="│                    MUNIX                    │	 	  "
+DATA[15]="│ =================00000000000=============== │	 	  "
+DATA[16]="│ ==================00000000================= │	          "
+DATA[17]="│ ╭─────────────────────────────────────────╮ │	          "
+DATA[18]="│ │   👥  👤         📷   📸       ➕  ➖         │ │		               "
+DATA[19]="│ │   👤  👥         🎥   📹       ✖️  ➗        │ │		  "
+DATA[20]="│ │  Contacts      Camera     calculator    │ │	          "
+DATA[21]="│ │                                         │ │		  "
+DATA[22]="│ │  📆    📅        📪    📭      🎮   👾        │ │		  "
+DATA[23]="│ │  📅    📆        ✉️   📫      🎯   🎲        │ │		  "
+DATA[24]="│ │  Calendar        Mail         fun       │ │		  "
+DATA[25]="│ │                                         │ │		  "
+DATA[26]="│ │  📞   📲          🎧   🎵       📻   🎧       │ │		  "
+DATA[27]="│ │  📱   ☎️         🎼   🎶       🔘  🔊        │ │		  "
+DATA[28]="│ │   Call          Music      VPlayer      │ │		  "
+DATA[29]="│ │                                         │ │		  "
+DATA[30]="│ │   🎤   🎙        ⚙️   ⚙️      🌉    🌄      │ │		  "
+DATA[31]="│ │     🎙                       🌇    🌈      │ │		  "
+DATA[32]="│ │  VRecorder     Settings     Gallery     │ │		  "
+DATA[33]="│ │                                         │ │		  "
+DATA[34]="│ ╰─────────────────────────────────────────╯ │		  "
+DATA[35]="│                  ╭‒‒‒‒‒‒‒‒‒╮                │		  "
+DATA[36]="│                 ⎛     ↑     ⎞               │		  "
+DATA[37]="│                 ⎢  ←  @  →  ⎥               │		  "
+DATA[38]="│                 ⎝     ↓     ⎠               │		  "
+DATA[39]="│                  ╰——‒‒‒‒‒‒‒╯                │		  "
+DATA[40]="╰─────────────────────────────────────────────╯		  "
+
+
+
+arrowup='\[A'
+arrowdown='\[B'
+arrowrt='\[C'
+arrowleft='\[D'
+
+
+
+#----------------------------------------------------------------
+
+REAL_OFFSET_X=50
+REAL_OFFSET_Y=2
+
+draw_char() {
+  V_COORD_X=$1
+  V_COORD_Y=$2
+
+  tput cup $((REAL_OFFSET_Y + V_COORD_Y)) $((REAL_OFFSET_X + V_COORD_X))
+
+  printf %s ${DATA[V_COORD_Y]:V_COORD_X:1}
+}
+
+
+
+extract_current_cursor_position() {
+    export $1
+    exec < /dev/tty
+    oldstty=$(stty -g)
+    stty raw -echo min 0
+    echo -en "\033[6n" > /dev/tty
+    IFS=';' read -r -d R -a pos
+    stty $oldstty
+    eval "$1[0]=$((${pos[0]:2} - 2))"
+    eval "$1[1]=$((${pos[1]} - 1))"
+}
+
+
+trap 'exit 1' INT TERM
+trap 'tput setaf 9; tput cvvis; clear' EXIT
+
+tput civis
+clear
+
+
+
+
+
+
+for ((c=1; c <= 3; c++)); do
+  tput setaf $c
+  for ((x=0; x<${#DATA[0]}; x++)); do
+    for ((y=0; y<=4; y++)); do
+      draw_char $x $y
+    done
+  done
+done
+
+
+
+for((x=0; x<=${#DATA[0]}; x++));do
+	for((y=5; y<=42; y++)); do
+		draw_char $x $y
+	done
+done
+
+
+
+#------------------------------------------
+
+
+tput setaf 0;
+
+
+
+
+
+y=20
+x=5
+ls > .catfile
+
+
+IFS=
+#while grep *
+#do    while read  -r  in  ||
+#            [ x -le 32 ] || [ y -le 29 ]
+#      do
+#      echo "$in"
+#      x=x+4
+#      y=y+6
+#      done
+#done < .catfile
+
+read u
